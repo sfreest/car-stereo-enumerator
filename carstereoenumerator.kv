@@ -1,0 +1,208 @@
+<BaseScreenManager>:
+	ProfileScreen:
+	MainScreen:
+	NewProfileScreen:
+	TrackScanScreen:
+
+<MainScreen>:
+	name: 'mainscreen'
+	id: mainscreen
+	on_pre_enter: root.on_pre_enter()
+	
+	BoxLayout:
+		id: mainscreen_main_boxlayout
+		orientation: 'vertical'
+		size_hint: 1, 1
+		
+		BoxLayout:
+			id: mainscreen_header_boxlayout
+			orientation: 'horizontal'
+			size_hint: 1,.1
+			
+			Label:
+				id: mainscreen_header
+				size_hint: .9,1
+				text_size: self.size
+				halign: 'center'
+				valign: 'middle'
+			
+			CheckBox:
+				id: checkbox_show_search
+				size_hint: .1,1
+				on_active: root.switch_show_search()
+		
+		ScrollView:
+			id: mainscreen_default_output
+			size_hint: 1,.8
+			do_scroll_x: False
+		
+		BoxLayout:
+			orientation: 'horizontal'
+			size_hint: 1,.1
+
+			Button:
+				id: button_show_folders
+				text: 'Folders'
+				on_release: root.generate_folder_buttons()
+			
+			Button:
+				id: button_delete_marked_files
+				text: 'Delete marked files'
+			
+			Button:
+				id: button_change_profile
+				text: 'Change profile'
+				on_release: app.root.current = 'profilescreen'
+
+<ProfileScreen>:
+	name: 'profilescreen'
+	id: profilescreen
+	on_pre_enter: root.on_pre_enter()
+	
+	BoxLayout:
+		orientation: 'vertical'
+	
+		Label:
+			text: 'Choose profile'
+			font_size: root.height / 40
+			height: root.height / 20
+			top: root.top - root.height / 20
+			center_x: root.center_x
+			center_y: root.center_y
+			size_hint: None,.1
+
+		SpinnerProfileSelect:
+			id: profile_spinner
+			center_x: root.center_x
+			size_hint: None,.2
+			size: 200,44
+		
+		BoxLayout:
+			size_hint: None,.2
+			center_x: root.center_x
+			
+			Button:
+				id: button_profile_ok
+				text: 'OK'
+				size_hint: None,None
+				on_release: root.button_profile_ok_release()
+			
+			Button:
+				id: button_profile_delete
+				text: 'Delete'
+				size_hint: None,None
+				on_release: root.button_profile_delete_release()
+
+<NewProfileScreen>:
+	name: 'newprofilescreen'
+	id: newprofilescreen
+	text_input_path_to_removable_media: text_input_path_to_removable_media
+	text_input_new_profile: text_input_new_profile
+	
+	BoxLayout:
+		orientation: 'vertical'
+		
+		Label:
+			text: 'Enter profile name:'
+			font_size: root.height / 40
+			height: root.height / 20
+			top: root.top - root.height / 20
+			center_x: root.center_x
+			center_y: root.center_y
+			size_hint: None,.1
+
+		TextInput:
+			id: text_input_new_profile
+			center_x: root.center_x
+			size_hint: None,.2
+			size: 200,44
+		
+		Label:
+			text: 'Choose path to removable media:'
+			font_size: root.height / 40
+			height: root.height / 20
+			center_x: root.center_x
+			center_y: root.center_y
+			size_hint: None,.1
+
+		BoxLayout:
+			orientation: 'horizontal'
+
+			TextInput:
+				id: text_input_path_to_removable_media
+				size_hint: None,.2
+				size: 200,44
+			
+			Button:
+				id: button_choose_path
+				text: '..'
+	            on_release: root.show_load()
+				size_hint: None,None
+
+		Button:
+			id: button_create_new_profile
+			text: 'Create profile'
+	        on_release: root.create_new_profile()
+			size_hint: None,None					
+
+<TrackScanScreen>:
+	name: 'trackscanscreen'
+	id: trackscanscreen
+	BoxLayout:
+		size_hint: 1,1
+		orientation: 'vertical'
+			
+		Label:
+			id: trackscanscreen_header
+			size_hint: 1,.3
+			
+		ProgressBar:
+			max: 100
+			id: progress_bar_scan
+			size_hint: 1,.2
+			
+		Label:
+			id: trackscanscreen_current_scanning_folder
+			text: ''
+			size_hint: 1,.2
+			text_size: self.size
+			
+		Label:
+			id: trackscanscreen_footer
+			size_hint: 1,.3
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserIconView:
+            id: filechooser
+            dirselect: True
+
+        BoxLayout:
+            size_hint_y: None
+            height: 30
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+<CLabel>:
+	text_size: self.size
+	halign: 'left'
+	valign: 'top'
+	shorten: True
+	shorten_from: 'right'
+	markup: True
+	
+	canvas.before:
+        
+        Color:
+            rgb: self.bgcolor
+        
+        Rectangle:
+            size: self.size
+            pos: self.pos
