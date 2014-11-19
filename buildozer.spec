@@ -59,7 +59,7 @@ fullscreen = 1
 android.permissions = READ_EXTERNAL_STORAGE 
 
 # (int) Android API to use
-#android.api = 14
+android.api = 14
 
 # (int) Minimum API required (8 = Android 2.2 devices)
 #android.minapi = 8
@@ -68,16 +68,16 @@ android.permissions = READ_EXTERNAL_STORAGE
 #android.sdk = 21
 
 # (str) Android NDK version to use
-#android.ndk = 9c
+android.ndk = 10b
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path =/opt/android-sdk-update-manager
+android.ndk_path = /opt/android-ndk
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
-android.sdk_path =/opt/android-sdk-update-manager
+android.sdk_path = /opt/android-sdk-update-manager
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #android.p4a_dir =
@@ -144,7 +144,7 @@ android.sdk_path =/opt/android-sdk-update-manager
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
-log_level = 1
+log_level = 2
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1
