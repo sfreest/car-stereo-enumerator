@@ -441,6 +441,36 @@ class MainScreen(Screen):
                 grid.add_widget(but)
             self.ids.mainscreen_header.text = 'Folders: %s' % str(self.total_counter) 
 
+    def delete_marked_files(self):
+
+        def delete_track_phisicaly(path_to_removable_media, folder_name, track_dict):
+
+            if track_dict[1] == False:
+                return False
+
+            try:
+                Logger.info(os.path.join(path_to_removable_media, folder_name, track_dict[0]))
+                os.remove(os.path.join(path_to_removable_media, folder_name, track_dict[0]))
+                return True
+            except:
+                return False
+
+        path_to_removable_media = manager_of_profile_list.active_profile['path_to_removable_media']
+        track_list_filename = manager_of_profile_list.active_profile['db_name']
+
+        if not os.path.exists(path_to_removable_media):
+            return
+
+        for rec in manager_of_track_list.track_list:
+            
+            folder_name = rec['folder_name']
+
+            rec['tracks'][:] = [tup for tup in rec['tracks'] if not delete_track_phisicaly(path_to_removable_media, folder_name, tup)]
+
+        manager_of_track_list.save_track_list(track_list_filename)
+        self.generate_folder_buttons()          
+
+
 class ProfileScreen(Screen):
     
     def on_pre_enter(self, *args):

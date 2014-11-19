@@ -48,6 +48,7 @@
 			Button:
 				id: button_delete_marked_files
 				text: 'Delete marked files'
+				on_release: root.delete_marked_files()
 			
 			Button:
 				id: button_change_profile
@@ -61,37 +62,56 @@
 	
 	BoxLayout:
 		orientation: 'vertical'
+		size_hint: 1, 1
+
+		Label:
+			id: profilescreen_header
+			size_hint: 1, .2
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'
 	
 		Label:
-			text: 'Choose profile'
-			font_size: root.height / 40
-			height: root.height / 20
-			top: root.top - root.height / 20
-			center_x: root.center_x
-			center_y: root.center_y
-			size_hint: None,.1
+			text: 'Choose profile:'
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'
+			size_hint: 1, .1
 
 		SpinnerProfileSelect:
 			id: profile_spinner
 			center_x: root.center_x
-			size_hint: None,.2
-			size: 200,44
+			size_hint: .5, .1
+
+		Label:
+			size_hint: 1, .05
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'
+			
 		
 		BoxLayout:
-			size_hint: None,.2
+			size_hint: .5,.05
 			center_x: root.center_x
 			
 			Button:
 				id: button_profile_ok
 				text: 'OK'
-				size_hint: None,None
+				size_hint: .7, 1
 				on_release: root.button_profile_ok_release()
 			
 			Button:
 				id: button_profile_delete
 				text: 'Delete'
-				size_hint: None,None
+				size_hint: .3, 1
 				on_release: root.button_profile_delete_release()
+
+		Label:
+			id: profilescreen_footer
+			size_hint: 1,.5
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'
 
 <NewProfileScreen>:
 	name: 'newprofilescreen'
@@ -101,49 +121,76 @@
 	
 	BoxLayout:
 		orientation: 'vertical'
+		size_hint: 1, 1
+
+		Label:
+			id: newprofilescreen_header
+			size_hint: 1, .2
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'
 		
 		Label:
 			text: 'Enter profile name:'
-			font_size: root.height / 40
-			height: root.height / 20
-			top: root.top - root.height / 20
-			center_x: root.center_x
-			center_y: root.center_y
-			size_hint: None,.1
-
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'
+			size_hint: 1, .1
+		
 		TextInput:
 			id: text_input_new_profile
 			center_x: root.center_x
-			size_hint: None,.2
-			size: 200,44
+			size_hint: .5,.1
+
+		Label:
+			id: newprofilescreen_filler
+			size_hint: 1, .1
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'			
 		
 		Label:
 			text: 'Choose path to removable media:'
-			font_size: root.height / 40
-			height: root.height / 20
-			center_x: root.center_x
-			center_y: root.center_y
-			size_hint: None,.1
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'
+			size_hint: 1, .1
 
 		BoxLayout:
 			orientation: 'horizontal'
+			size_hint: .5, .1
+			center_x: root.center_x
 
 			TextInput:
 				id: text_input_path_to_removable_media
-				size_hint: None,.2
-				size: 200,44
+				size_hint: .7,1
 			
 			Button:
 				id: button_choose_path
 				text: '..'
 	            on_release: root.show_load()
-				size_hint: None,None
+				size_hint: .3,1
+
+		Label:
+			id: newprofilescreen_filler
+			size_hint: 1, .1
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'	
 
 		Button:
 			id: button_create_new_profile
 			text: 'Create profile'
+			center_x: root.center_x
 	        on_release: root.create_new_profile()
-			size_hint: None,None					
+			size_hint: .3,.1
+
+		Label:
+			id: newprofilescreen_footer
+			size_hint: 1, .1
+			text_size: self.size
+			halign: 'center'
+			valign: 'middle'				
 
 <TrackScanScreen>:
 	name: 'trackscanscreen'
