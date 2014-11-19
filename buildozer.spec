@@ -56,7 +56,7 @@ fullscreen = 1
 #
 
 # (list) Permissions
-#android.permissions = READ_EXTERNAL_STORAGE 
+android.permissions = READ_EXTERNAL_STORAGE 
 
 # (int) Android API to use
 #android.api = 14
@@ -74,10 +74,10 @@ fullscreen = 1
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-#android.ndk_path =
+android.ndk_path =/opt/android-sdk-update-manager
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
-#android.sdk_path =
+android.sdk_path =/opt/android-sdk-update-manager
 
 # (str) python-for-android git clone directory (if empty, it will be automatically cloned from github)
 #android.p4a_dir =
