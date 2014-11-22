@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from kivy.app import App
 from kivy.base import runTouchApp
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -15,8 +17,9 @@ from kivy.uix.textinput import TextInput
 from kivy.clock import Clock
 from functools import partial
 from kivy.logger import Logger
+from kivy.uix.behaviors import ButtonBehavior
 
-import os, glob, pickle
+import os, glob, pickle, string
 
 class ProfileManager():
     
@@ -123,21 +126,74 @@ class TrackListManager():
                 return False
         else:
             return True
-    #def generate_track_list_filename(self, track_list_name):
-    #    return '.' + track_list_name + '.tdb'
-    
+        
     def create_new_track_list(self, path_to_removable_media, track_list_filename, 
                               screenmanager_widget,  path_to_profiles='./.profiles'):
-        
+
+        def clear_file_names(path_to_removable_media):
+
+            codepage = 'utf16'
+            allowed_chars = string.digits + string.letters + '.- '
+            allowed_chars = unicode(allowed_chars)
+            allowed_chars = allowed_chars + u'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя'
+            
+            path_to_removable_media = unicode(path_to_removable_media)
+            
+            if os.path.exists(path_to_removable_media):
+
+                for folder in os.listdir(path_to_removable_media):
+                    
+                    path = os.path.join(path_to_removable_media, folder)
+                    if os.path.isdir(path):
+
+                        for track in os.listdir(path):
+                            
+                            new_file_name = track
+                            
+
+
+                            if new_file_name.endswith(('.mp3','.wav','.aac','.flac','.wma'),) and \
+                            os.path.isfile(os.path.join(path, track)):
+
+                                new_file_name = filter(allowed_chars.__contains__, new_file_name)
+                               
+                                Logger.info(track + ' [] ' + new_file_name)
+                                if new_file_name <> track:
+
+                                    previous_path_to_file = os.path.join(path, track)
+                                    #previos_path_to_file = previos_path_to_file.encode(codepage)
+
+                                    new_path_to_file = os.path.join(path, new_file_name)
+                                    #new_path_to_file = new_path_to_file.encode(codepage)
+
+                                    Logger.info('previos_path_to_file:' + previous_path_to_file + str(type(previous_path_to_file)))
+                                    #Logger.info('new_path_to_file:' + new_path_to_file + str(type(new_path_to_file)))
+                                    #Logger.info('Exists:' + str(os.path.exists(new_path_to_file)))
+                                    #Logger.info('new_path_to_file:' + str(os.path.exists(new_path_to_file)))
+                                    while os.path.exists(new_path_to_file):
+                                        tmp_file_name, tmp_file_extension = os.path.splitext(new_path_to_file)
+                                        new_path_to_file = tmp_file_name + u'-RENAMED' + tmp_file_extension
+                                        Logger.info('new_path_to_file:' + new_path_to_file + str(type(new_path_to_file)))   
+                                    
+                                    Logger.info('previos_path_to_file:' + previous_path_to_file + str(type(previous_path_to_file)))
+                                    os.rename(previous_path_to_file, new_path_to_file)
+
+######################End of clear_file_names()###################################################################################################                            
+
         if screenmanager_widget != None:
             show_load_widget = True
             trackscanscreen = screenmanager_widget.get_screen('trackscanscreen')
+
+        path_to_removable_media = unicode(path_to_removable_media)
 
         if self.profiles_path_exists(path_to_profiles):
             if os.path.exists(path_to_removable_media):
                 if show_load_widget:
                     screenmanager_widget.current = 'trackscanscreen'
+
+                clear_file_names(path_to_removable_media)
                 
+
                 #Collectiong folders
                 for folder in os.listdir(path_to_removable_media):
                     path = os.path.join(path_to_removable_media, folder)
@@ -159,8 +215,10 @@ class TrackListManager():
                     current_path = os.path.join(path_to_removable_media, element['folder_name'])
                     for track in os.listdir(current_path):
 
+                        
                         if track.endswith(('.mp3','.wav','.aac','.flac','.wma'),) and \
                         os.path.isfile(os.path.join(current_path, track)):
+
                             current_folder_tracks.append([track, False])
 
                     element['tracks'] = current_folder_tracks
@@ -201,7 +259,7 @@ class TrackListManager():
                 return tr_rec['tracks']
         return []
 
-class CLabel(Label):
+class CLabel(ButtonBehavior, Label):
     bgcolor = ListProperty([0,0,0])
 
 class DigitInput(TextInput):
@@ -248,18 +306,20 @@ class MainScreen(Screen):
             manager_of_profile_list.active_profile['activate_search'] = self.ids.checkbox_show_search.active
             manager_of_profile_list.save_profiles()
             if manager_of_track_list.active_folder != '':
-                self.generate_track_search_output()   
+                self.generate_track_search_output()
+            return True   
         else:
             manager_of_profile_list.active_profile['activate_search'] = self.ids.checkbox_show_search.active
             manager_of_profile_list.save_profiles()
             if manager_of_track_list.active_folder != '':       
                 self.generate_track_list_output()
+            return True
 
-    def mark_track_to_delete(self, track_dict, current_label, touch):
+    def mark_track_to_delete(self, track_dict, current_label):
 
-        if not current_label.collide_point(*touch.pos):
-            return
-
+        #if not current_label.collide_point(*touch.pos):
+        #    return
+        
         # if main screen is search mode, no need of updating header
         update_header = not manager_of_profile_list.active_profile['activate_search']        
 
@@ -282,6 +342,9 @@ class MainScreen(Screen):
                 self.ids.mainscreen_header.text = '[%s]: total: [%s], del: [%s]' % \
                     (manager_of_track_list.active_folder, str(self.total_counter), str(self.marked_to_del))
             manager_of_track_list.save_track_list(manager_of_profile_list.active_profile['db_name'])   
+
+
+        return True
 
 
     def generate_track_view(self, button_object):
@@ -369,6 +432,8 @@ class MainScreen(Screen):
 
         blo_root.add_widget(grid)
 
+        self.ids.mainscreen_header.text = '[%s]' % (manager_of_track_list.active_folder)
+
     def generate_track_list_output(self):
 
         self.ids.mainscreen_default_output.clear_widgets()
@@ -396,14 +461,14 @@ class MainScreen(Screen):
                 lb_text = '[b][size=50]' + str(track_number) + '[/size][/b]' + ' ' + tr[0]
 
                 lb = CLabel(text=lb_text, bgcolor=self.bgcolor_marked)
-                lb.bind(on_touch_up=partial(self.mark_track_to_delete, tr))
+                lb.bind(on_release=partial(self.mark_track_to_delete, tr))
                 grid.add_widget(lb)
             else:
                 
                 lb_text = '[b][size=50]' + str(track_number) + '[/size][/b]' + ' ' + tr[0]
 
                 lb = CLabel(text=lb_text, bgcolor=self.bgcolor)
-                lb.bind(on_touch_up=partial(self.mark_track_to_delete, tr))
+                lb.bind(on_release=partial(self.mark_track_to_delete, tr))
                 grid.add_widget(lb)
 
         self.ids.mainscreen_header.text = '[%s]: total: [%s], del: [%s]' % \
@@ -439,7 +504,9 @@ class MainScreen(Screen):
                 halign='center',valign='middle')
                 but.bind(on_release=self.generate_track_view)
                 grid.add_widget(but)
-            self.ids.mainscreen_header.text = 'Folders: %s' % str(self.total_counter) 
+            self.ids.mainscreen_header.text = 'Folders: %s' % str(self.total_counter)
+
+            return False
 
     def delete_marked_files(self):
 
@@ -449,11 +516,13 @@ class MainScreen(Screen):
                 return False
 
             try:
-                Logger.info(os.path.join(path_to_removable_media, folder_name, track_dict[0]))
                 os.remove(os.path.join(path_to_removable_media, folder_name, track_dict[0]))
                 return True
             except:
                 return False
+
+        
+
 
         path_to_removable_media = manager_of_profile_list.active_profile['path_to_removable_media']
         track_list_filename = manager_of_profile_list.active_profile['db_name']
@@ -478,6 +547,7 @@ class ProfileScreen(Screen):
             Clock.schedule_once(lambda dt: self.on_pre_enter())
             return
 
+        
         manager_of_profile_list.load_profiles()
         list_of_profiles = manager_of_profile_list.list_of_profiles
         profile_spinner = self.ids.profile_spinner
@@ -511,6 +581,11 @@ class NewProfileScreen(Screen):
     loadfile = ObjectProperty(None)
     text_input_path_to_removable_media = ObjectProperty(None)
     text_input_new_profile = ObjectProperty(None)
+
+    def on_pre_enter(self):
+        if not self.name:
+            Clock.schedule_once(lambda dt: self.on_pre_enter())
+            return
 
     def dismiss_popup(self):
         self._popup.dismiss()

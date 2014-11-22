@@ -80,7 +80,7 @@
 
 		SpinnerProfileSelect:
 			id: profile_spinner
-			center_x: root.center_x
+			pos_hint: {'center_x': .5}
 			size_hint: .5, .1
 
 		Label:
@@ -92,7 +92,7 @@
 		
 		BoxLayout:
 			size_hint: .5,.05
-			center_x: root.center_x
+			pos_hint: {'center_x': .5}
 			
 			Button:
 				id: button_profile_ok
@@ -118,6 +118,7 @@
 	id: newprofilescreen
 	text_input_path_to_removable_media: text_input_path_to_removable_media
 	text_input_new_profile: text_input_new_profile
+	on_pre_enter: root.on_pre_enter()
 	
 	BoxLayout:
 		orientation: 'vertical'
@@ -139,7 +140,7 @@
 		
 		TextInput:
 			id: text_input_new_profile
-			center_x: root.center_x
+			pos_hint: {'center_x': .5}
 			size_hint: .5,.1
 
 		Label:
@@ -159,7 +160,7 @@
 		BoxLayout:
 			orientation: 'horizontal'
 			size_hint: .5, .1
-			center_x: root.center_x
+			pos_hint: {'center_x': .5}
 
 			TextInput:
 				id: text_input_path_to_removable_media
@@ -181,7 +182,7 @@
 		Button:
 			id: button_create_new_profile
 			text: 'Create profile'
-			center_x: root.center_x
+			pos_hint: {'center_x': .5}
 	        on_release: root.create_new_profile()
 			size_hint: .3,.1
 
