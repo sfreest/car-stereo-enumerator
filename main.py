@@ -385,7 +385,7 @@ class MainScreen(Screen):
                 lb_text = '[b][size=50]' + str(index_of_track + 1) + '[/size][/b]' + ' ' + tr[0]
 
                 lb = CLabel(text=lb_text, bgcolor=self.bgcolor_marked)
-                lb.bind(on_touch_up=partial(self.mark_track_to_delete, tr))
+                lb.bind(on_release=partial(self.mark_track_to_delete, tr))
                 grid_for_track_output.add_widget(lb)
             
             else:
@@ -393,7 +393,7 @@ class MainScreen(Screen):
                 lb_text = '[b][size=50]' + str(index_of_track + 1) + '[/size][/b]' + ' ' + tr[0]
 
                 lb = CLabel(text=lb_text, bgcolor=self.bgcolor)
-                lb.bind(on_touch_up=partial(self.mark_track_to_delete, tr))
+                lb.bind(on_release=partial(self.mark_track_to_delete, tr))
                 grid_for_track_output.add_widget(lb)
 
         self.ids.mainscreen_header.text = '[%s]' % (manager_of_track_list.active_folder) 
@@ -442,9 +442,8 @@ class MainScreen(Screen):
         grid = GridLayout(cols=1, spacing=(0,10), size_hint_y=None, 
                 padding = [10,10,10,10],row_force_default=True, row_default_height=50)
         grid.bind(minimum_height=grid.setter('height'))
-        sv = self.ids.mainscreen_default_output
-        sv.add_widget(grid)
-
+        
+        
         self.total_counter = 0
         self.marked_to_del = 0
 
@@ -470,6 +469,10 @@ class MainScreen(Screen):
                 lb = CLabel(text=lb_text, bgcolor=self.bgcolor)
                 lb.bind(on_release=partial(self.mark_track_to_delete, tr))
                 grid.add_widget(lb)
+
+        sv = self.ids.mainscreen_default_output
+        sv.add_widget(grid)
+
 
         self.ids.mainscreen_header.text = '[%s]: total: [%s], del: [%s]' % \
         (manager_of_track_list.active_folder, str(self.total_counter), str(self.marked_to_del))   
