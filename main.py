@@ -374,7 +374,7 @@ class MainScreen(Screen):
         tracks_in_folder = manager_of_track_list.get_current_tracklist_in_folder_name(manager_of_track_list.active_folder)
         index_of_track = int(digitinput_search.text) - 1
 
-        if (index_of_track > 0 and index_of_track < len(tracks_in_folder)):
+        if (index_of_track >= 0 and index_of_track < len(tracks_in_folder)):
             
             tr = tracks_in_folder[index_of_track]
            
